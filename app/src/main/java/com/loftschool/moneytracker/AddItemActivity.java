@@ -12,7 +12,6 @@ import android.widget.EditText;
 public class AddItemActivity extends AppCompatActivity {
 
     private static final String TAG = "AddItemActivity";
-    private static final String RUBLE_SIGN = "\u20BD";
 
     private EditText name;
     private EditText price;
@@ -40,11 +39,12 @@ public class AddItemActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (!TextUtils.isEmpty(price.getText()) && !price.getText().toString().endsWith(RUBLE_SIGN)) {
-                    price.setText(price.getText() + RUBLE_SIGN);
+                if (!TextUtils.isEmpty(price.getText()) && !price.getText().toString().endsWith(getString(R.string.ruble))) {
+                    String priceFormat = String.format(getString(R.string.price), price.getText().toString());
+                    price.setText(priceFormat);
                     price.setSelection(price.length() - 1);
                 }
-                if (price.getText().toString().equals(RUBLE_SIGN)) {
+                if (price.getText().toString().equals(getString(R.string.ruble))) {
                     price.setText("");
                 }
 

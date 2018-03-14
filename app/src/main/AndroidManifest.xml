@@ -11,7 +11,12 @@
         <activity android:name=".MainActivity">
 
         </activity>
-        <activity android:name=".AddItemActivity" android:label="@string/add_item_title">
+        <activity
+            android:name=".AddItemActivity"
+            android:label="@string/add_item_title"></activity>
+        <activity
+            android:name=".ItemListActivity"
+            android:label="@string/activity_items_list_title">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
