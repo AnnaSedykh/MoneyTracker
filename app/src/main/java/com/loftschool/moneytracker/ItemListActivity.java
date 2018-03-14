@@ -1,5 +1,6 @@
 package com.loftschool.moneytracker;
 
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -32,6 +33,11 @@ public class ItemListActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         createData();
+
+        int offset = getResources().getDimensionPixelOffset(R.dimen.item_offset);
+        RecyclerView.ItemDecoration itemDecoration = new ItemOffsetDecoration(offset);
+        recyclerView.addItemDecoration(itemDecoration);
+
         adapter = new ItemListAdapter();
         recyclerView.setAdapter(adapter);
     }
@@ -77,6 +83,29 @@ public class ItemListActivity extends AppCompatActivity {
             title.setText(record.getTitle());
             String priceFormat = String.format(getString(R.string.price), String.valueOf(record.getPrice()));
             price.setText(priceFormat);
+        }
+    }
+
+    private class ItemOffsetDecoration extends RecyclerView.ItemDecoration {
+        private int offset;
+
+        public ItemOffsetDecoration(int offset) {
+            this.offset = offset;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view,
+                                   RecyclerView parent, RecyclerView.State state) {
+
+            outRect.right = offset;
+            outRect.left = offset;
+            outRect.top = offset/2;
+            outRect.bottom = offset/2;
+
+            if (parent.getChildAdapterPosition(view) == 0) {
+                outRect.top = offset;
+            }
+
         }
     }
 }
