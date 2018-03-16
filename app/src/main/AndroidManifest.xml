@@ -15,7 +15,7 @@
             android:name=".AddItemActivity"
             android:label="@string/add_item_title"></activity>
         <activity
-            android:name=".ItemListActivity"
+            android:name=".ItemsActivity"
             android:label="@string/activity_items_list_title">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
