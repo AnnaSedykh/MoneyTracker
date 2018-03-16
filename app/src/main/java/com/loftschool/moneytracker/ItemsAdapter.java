@@ -36,7 +36,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHold
     }
 
     private void createData() {
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 30; i++) {
             data.add(new Item("Item #" + i, (int) (Math.random() * 10000)));
         }
     }
