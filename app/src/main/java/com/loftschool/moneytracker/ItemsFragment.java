@@ -26,7 +26,7 @@ public class ItemsFragment extends Fragment {
     public static ItemsFragment createItemsFragment(int type){
         ItemsFragment fragment = new ItemsFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(ItemsFragment.TYPE_KEY, ItemsFragment.TYPE_INCOMES);
+        bundle.putInt(ItemsFragment.TYPE_KEY, type);
         fragment.setArguments(bundle);
         return fragment;
     }

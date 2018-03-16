@@ -20,9 +20,17 @@ public class MainActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.view_pager);
         tabLayout = findViewById(R.id.tab_layout);
 
+        setTabLayoutStyle(tabLayout);
+
         MainPagesAdapter adapter = new MainPagesAdapter(getSupportFragmentManager(), this);
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
+    }
+
+    private void setTabLayoutStyle(TabLayout tabLayout) {
+        tabLayout.setTabTextColors(getResources().getColor(R.color.colorInactive),
+                                    getResources().getColor(R.color.colorActive));
+        tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.colorIndicator));
     }
 
     @Override
