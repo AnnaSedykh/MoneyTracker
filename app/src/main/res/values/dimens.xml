@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <dimen name="item_offset">10dp</dimen>
+    <dimen name="offset_10dp">10dp</dimen>
+    <dimen name="offset_5dp">5dp</dimen>
 
 </resources>

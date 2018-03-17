@@ -57,32 +57,5 @@ public class ItemsFragment extends Fragment {
         recycler = view.findViewById(R.id.list);
         recycler.setLayoutManager(new LinearLayoutManager(getContext()));
         recycler.setAdapter(adapter);
-
-        int offset = getResources().getDimensionPixelOffset(R.dimen.item_offset);
-        RecyclerView.ItemDecoration itemDecoration = new ItemOffsetDecoration(offset);
-        recycler.addItemDecoration(itemDecoration);
-    }
-
-    private class ItemOffsetDecoration extends RecyclerView.ItemDecoration {
-        private int offset;
-
-        private ItemOffsetDecoration(int offset) {
-            this.offset = offset;
-        }
-
-        @Override
-        public void getItemOffsets(Rect outRect, View view,
-                                   RecyclerView parent, RecyclerView.State state) {
-
-            outRect.right = offset;
-            outRect.left = offset;
-            outRect.top = offset / 2;
-            outRect.bottom = offset / 2;
-
-            if (parent.getChildAdapterPosition(view) == 0) {
-                outRect.top = offset;
-            }
-
-        }
     }
 }

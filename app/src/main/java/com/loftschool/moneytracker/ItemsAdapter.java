@@ -55,8 +55,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHold
 
         public void applyData(Item item) {
             title.setText(item.getTitle());
-            String priceFormat = String.format(context.getString(R.string.price), String.valueOf(item.getPrice()));
-            price.setText(priceFormat);
+            price.setText(context.getString(R.string.price, item.getPrice()));
         }
     }
 }

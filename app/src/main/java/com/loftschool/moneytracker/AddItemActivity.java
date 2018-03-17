@@ -40,7 +40,7 @@ public class AddItemActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 if (!TextUtils.isEmpty(price.getText()) && !price.getText().toString().endsWith(getString(R.string.ruble))) {
-                    String priceFormat = String.format(getString(R.string.price), price.getText().toString());
+                    String priceFormat = getString(R.string.price, Integer.getInteger(price.getText().toString()));
                     price.setText(priceFormat);
                     price.setSelection(price.length() - 1);
                 }
