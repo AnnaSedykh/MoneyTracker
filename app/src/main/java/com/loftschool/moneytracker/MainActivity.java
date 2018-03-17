@@ -1,16 +1,36 @@
 package com.loftschool.moneytracker;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 public class MainActivity extends AppCompatActivity {
+
+    private ViewPager viewPager;
+    private TabLayout tabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.i("MainActivity", "onCreate");
+
+        viewPager = findViewById(R.id.view_pager);
+        tabLayout = findViewById(R.id.tab_layout);
+
+        setTabLayoutStyle(tabLayout);
+
+        MainPagesAdapter adapter = new MainPagesAdapter(getSupportFragmentManager(), this);
+        viewPager.setAdapter(adapter);
+        tabLayout.setupWithViewPager(viewPager);
+    }
+
+    private void setTabLayoutStyle(TabLayout tabLayout) {
+        tabLayout.setTabTextColors(getResources().getColor(R.color.colorInactive),
+                                    getResources().getColor(R.color.colorActive));
+        tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.colorIndicator));
     }
 
     @Override

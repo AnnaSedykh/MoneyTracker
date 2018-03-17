@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">MoneyTracker</string>
-    <string name="hello_world">Hello world!</string>
     <string name="add_item_title">Новая запись</string>
     <string name="add_item_name">Название</string>
     <string name="add_item_price">0₽</string>
@@ -8,4 +7,14 @@
 
     <string name="ruble">&#x20bd;</string>
     <string name="price">%s&#x20bd;</string>
+
+    <string name="tab_incomes">Доходы</string>
+    <string name="tab_expenses">Расходы</string>
+    <string name="tab_balance">Баланс</string>
+
+    <string-array name="tab_titles">
+        <item>@string/tab_incomes</item>
+        <item>@string/tab_expenses</item>
+        <item>@string/tab_balance</item>
+    </string-array>
 </resources>

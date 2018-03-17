@@ -1,16 +1,12 @@
 package com.loftschool.moneytracker;
 
-/**
- * Created by PC on 14.03.2018.
- */
-
-public class Record {
+public class Item {
 
     private final String title;
     private final int price;
     private String comment;
 
-    public Record(String title, int price) {
+    public Item(String title, int price) {
         this.title = title;
         this.price = price;
     }
