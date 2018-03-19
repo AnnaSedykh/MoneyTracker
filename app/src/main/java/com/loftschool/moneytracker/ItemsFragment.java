@@ -1,32 +1,36 @@
 package com.loftschool.moneytracker;
 
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class ItemsFragment extends Fragment {
 
-    public static final int TYPE_INCOMES = 0;
-    public static final int TYPE_EXPENSES = 1;
-    public static final int TYPE_BALANCE = 2;
-    private static final int TYPE_UNKNOWN = -1;
     private static final String TYPE_KEY = "type";
 
-    private int type;
+    private String type;
 
     private RecyclerView recycler;
     private ItemsAdapter adapter;
 
-    public static ItemsFragment createItemsFragment(int type){
+    private Api api;
+
+    public static ItemsFragment createItemsFragment(String type) {
         ItemsFragment fragment = new ItemsFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(ItemsFragment.TYPE_KEY, type);
+        bundle.putString(ItemsFragment.TYPE_KEY, type);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -37,11 +41,13 @@ public class ItemsFragment extends Fragment {
         adapter = new ItemsAdapter();
 
         Bundle bundle = getArguments();
-        type = bundle.getInt(TYPE_KEY, TYPE_UNKNOWN);
+        type = bundle.getString(TYPE_KEY, Item.TYPE_UNKNOWN);
 
-        if(type == TYPE_UNKNOWN){
+        if (type.equals(Item.TYPE_UNKNOWN)) {
             throw new IllegalArgumentException("Unknown type");
         }
+
+        api = ((App) getActivity().getApplication()).getApi();
     }
 
     @Nullable
@@ -58,31 +64,39 @@ public class ItemsFragment extends Fragment {
         recycler.setLayoutManager(new LinearLayoutManager(getContext()));
         recycler.setAdapter(adapter);
 
-        int offset = getResources().getDimensionPixelOffset(R.dimen.item_offset);
-        RecyclerView.ItemDecoration itemDecoration = new ItemOffsetDecoration(offset);
-        recycler.addItemDecoration(itemDecoration);
+        addItem(new Item("New item", 555, Item.TYPE_INCOMES));
+        loadData();
     }
 
-    private class ItemOffsetDecoration extends RecyclerView.ItemDecoration {
-        private int offset;
+    private void loadData() {
 
-        private ItemOffsetDecoration(int offset) {
-            this.offset = offset;
-        }
-
-        @Override
-        public void getItemOffsets(Rect outRect, View view,
-                                   RecyclerView parent, RecyclerView.State state) {
-
-            outRect.right = offset;
-            outRect.left = offset;
-            outRect.top = offset / 2;
-            outRect.bottom = offset / 2;
-
-            if (parent.getChildAdapterPosition(view) == 0) {
-                outRect.top = offset;
+        Call<List<Item>> call = api.getItems(type);
+        call.enqueue(new Callback<List<Item>>() {
+            @Override
+            public void onResponse(Call<List<Item>> call, Response<List<Item>> response) {
+                adapter.setData(response.body());
             }
 
-        }
+            @Override
+            public void onFailure(Call<List<Item>> call, Throwable t) {
+
+            }
+        });
     }
+
+    private void addItem(Item item) {
+        Call<String> call = api.addItem(item);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                Log.i("ItemsFragment", "addItem onResponse: " + response.body());
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+
+            }
+        });
+    }
+
 }
