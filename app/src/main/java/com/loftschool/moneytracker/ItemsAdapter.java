@@ -14,10 +14,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHold
 
     private List<Item> data = new ArrayList<>();
 
-    public ItemsAdapter() {
-        createData();
-    }
-
     @Override
     public ItemsAdapter.ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item, parent, false);
@@ -35,10 +31,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHold
         return data.size();
     }
 
-    private void createData() {
-        for (int i = 0; i < 30; i++) {
-            data.add(new Item("Item #" + i, (int) (Math.random() * 10000)));
-        }
+    public void setData(List<Item> data) {
+        this.data = data;
+        notifyDataSetChanged();
     }
 
     static class ItemViewHolder extends RecyclerView.ViewHolder {
@@ -54,8 +49,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHold
         }
 
         public void applyData(Item item) {
-            title.setText(item.getTitle());
-            price.setText(context.getString(R.string.price, item.getPrice()));
+            title.setText(item.title);
+            price.setText(context.getString(R.string.price, item.price));
         }
     }
 }

@@ -1,29 +1,23 @@
 package com.loftschool.moneytracker;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Item {
 
-    private final String title;
-    private final int price;
-    private String comment;
+    public static final String TYPE_INCOMES = "0";
+    public static final String TYPE_EXPENSES = "1";
+    public static final String TYPE_BALANCE = "2";
+    public static final String TYPE_UNKNOWN = "-1";
 
-    public Item(String title, int price) {
+    public int id;
+    @SerializedName("name")
+    public String title;
+    public int price;
+    public String type;
+
+    public Item(String title, int price, String type) {
         this.title = title;
         this.price = price;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public int getPrice() {
-        return price;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
+        this.type = type;
     }
 }
