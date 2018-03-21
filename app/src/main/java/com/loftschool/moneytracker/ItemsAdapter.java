@@ -36,6 +36,11 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHold
         notifyDataSetChanged();
     }
 
+    public void addItem(Item item) {
+        data.add(item);
+        notifyItemInserted(data.size());
+    }
+
     static class ItemViewHolder extends RecyclerView.ViewHolder {
         private final TextView title;
         private final TextView price;
@@ -50,7 +55,11 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHold
 
         public void applyData(Item item) {
             title.setText(item.title);
-            price.setText(context.getString(R.string.price, item.price));
+            if (item.price.endsWith(context.getString(R.string.ruble))) {
+                price.setText(item.price);
+            } else {
+                price.setText(context.getString(R.string.price, item.price));
+            }
         }
     }
 }

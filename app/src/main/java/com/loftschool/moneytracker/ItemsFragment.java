@@ -1,8 +1,14 @@
 package com.loftschool.moneytracker;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,12 +24,15 @@ import retrofit2.Response;
 
 public class ItemsFragment extends Fragment {
 
-    private static final String TYPE_KEY = "type";
+    public static final String TYPE_KEY = "type";
+    public static final int ADD_ITEM_REQUEST_CODE = 123;
 
     private String type;
 
     private RecyclerView recycler;
+    private FloatingActionButton fab;
     private ItemsAdapter adapter;
+    private SwipeRefreshLayout refresh;
 
     private Api api;
 
@@ -64,7 +73,32 @@ public class ItemsFragment extends Fragment {
         recycler.setLayoutManager(new LinearLayoutManager(getContext()));
         recycler.setAdapter(adapter);
 
-        addItem(new Item("New item", 555, Item.TYPE_INCOMES));
+        fab = view.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//
+//                Intent intent = new Intent();
+//                intent.setAction(Intent.ACTION_VIEW);
+//                intent.setData(Uri.parse("http://mail.ru/"));
+//                startActivity(intent);
+
+                Intent intent = new Intent(getContext(),AddItemActivity.class);
+                intent.putExtra(ItemsFragment.TYPE_KEY, type);
+                startActivityForResult(intent,ADD_ITEM_REQUEST_CODE);
+            }
+        });
+
+        refresh = view.findViewById(R.id.refresh);
+        refresh.setColorSchemeColors(Color.CYAN, Color.BLUE, Color.GREEN);
+        refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadData();
+            }
+        });
+
+        addItem(new Item("New item", "555", Item.TYPE_INCOMES));
         loadData();
     }
 
@@ -75,11 +109,12 @@ public class ItemsFragment extends Fragment {
             @Override
             public void onResponse(Call<List<Item>> call, Response<List<Item>> response) {
                 adapter.setData(response.body());
+                refresh.setRefreshing(false);
             }
 
             @Override
             public void onFailure(Call<List<Item>> call, Throwable t) {
-
+                refresh.setRefreshing(false);
             }
         });
     }
@@ -99,4 +134,11 @@ public class ItemsFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == ADD_ITEM_REQUEST_CODE && resultCode == Activity.RESULT_OK){
+            adapter.addItem((Item)data.getParcelableExtra("item"));
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }
