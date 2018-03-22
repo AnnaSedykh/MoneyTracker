@@ -3,10 +3,8 @@ package com.loftschool.moneytracker;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -30,7 +28,6 @@ public class ItemsFragment extends Fragment {
     private String type;
 
     private RecyclerView recycler;
-    private FloatingActionButton fab;
     private ItemsAdapter adapter;
     private SwipeRefreshLayout refresh;
 
@@ -72,22 +69,6 @@ public class ItemsFragment extends Fragment {
         recycler = view.findViewById(R.id.list);
         recycler.setLayoutManager(new LinearLayoutManager(getContext()));
         recycler.setAdapter(adapter);
-
-        fab = view.findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//
-//                Intent intent = new Intent();
-//                intent.setAction(Intent.ACTION_VIEW);
-//                intent.setData(Uri.parse("http://mail.ru/"));
-//                startActivity(intent);
-
-                Intent intent = new Intent(getContext(),AddItemActivity.class);
-                intent.putExtra(ItemsFragment.TYPE_KEY, type);
-                startActivityForResult(intent,ADD_ITEM_REQUEST_CODE);
-            }
-        });
 
         refresh = view.findViewById(R.id.refresh);
         refresh.setColorSchemeColors(Color.CYAN, Color.BLUE, Color.GREEN);
@@ -136,9 +117,12 @@ public class ItemsFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == ADD_ITEM_REQUEST_CODE && resultCode == Activity.RESULT_OK){
-            adapter.addItem((Item)data.getParcelableExtra("item"));
-        }
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ADD_ITEM_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            Item item = data.getParcelableExtra("item");
+            if (item.type.equals(type)) {
+                adapter.addItem(item);
+            }
+        }
     }
 }
