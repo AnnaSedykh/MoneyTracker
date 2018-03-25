@@ -2,6 +2,7 @@ package com.loftschool.moneytracker;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,11 @@ import java.util.List;
 public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHolder> {
 
     private List<Item> data = new ArrayList<>();
+    private ItemsAdapterListener listener = null;
+
+    public void setListener(ItemsAdapterListener listener){
+        this.listener = listener;
+    }
 
     @Override
     public ItemsAdapter.ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -23,7 +29,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHold
     @Override
     public void onBindViewHolder(ItemsAdapter.ItemViewHolder holder, int position) {
         Item item = data.get(position);
-        holder.applyData(item);
+        holder.bind(item, position, listener, selections.get(position, false));
     }
 
     @Override
@@ -41,6 +47,42 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHold
         notifyItemInserted(data.size());
     }
 
+    private SparseBooleanArray selections = new SparseBooleanArray();
+
+    void toggleSelection(int position) {
+        if (selections.get(position, false)) {
+            selections.delete(position);
+        } else {
+            selections.put(position, true);
+        }
+        notifyItemChanged(position);
+    }
+
+    void clearSelections(){
+        selections.clear();
+        notifyDataSetChanged();
+    }
+
+    int getSelectedItemCount(){
+        return selections.size();
+    }
+
+    List<Integer> getSelectedItems(){
+        List<Integer> items = new ArrayList<>(selections.size());
+        for (int i = 0; i < selections.size(); i++) {
+            items.add(selections.keyAt(i));
+        }
+        return items;
+    }
+
+    Item remove(int position){
+        final Item item = data.remove(position);
+        notifyItemChanged(position);
+        return item;
+    }
+
+
+
     static class ItemViewHolder extends RecyclerView.ViewHolder {
         private final TextView title;
         private final TextView price;
@@ -53,13 +95,31 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHold
             context = itemView.getContext();
         }
 
-        public void applyData(Item item) {
+        public void bind(final Item item, final int position, final ItemsAdapterListener listener, boolean selected) {
             title.setText(item.title);
             if (item.price.endsWith(context.getString(R.string.ruble))) {
                 price.setText(item.price);
             } else {
                 price.setText(context.getString(R.string.price, item.price));
             }
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(listener != null){
+                        listener.onItemClick(item, position);
+                    }
+                }
+            });
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    if(listener != null){
+                        listener.onItemLongClick(item, position);
+                    }
+                    return true;
+                }
+            });
+            itemView.setActivated(selected);
         }
     }
 }

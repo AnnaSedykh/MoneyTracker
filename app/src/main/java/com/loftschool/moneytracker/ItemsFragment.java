@@ -1,16 +1,23 @@
 package com.loftschool.moneytracker;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -45,6 +52,7 @@ public class ItemsFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         adapter = new ItemsAdapter();
+        adapter.setListener(new ItemsAdapterListenerImpl());
 
         Bundle bundle = getArguments();
         type = bundle.getString(TYPE_KEY, Item.TYPE_UNKNOWN);
@@ -125,4 +133,95 @@ public class ItemsFragment extends Fragment {
             }
         }
     }
+
+    /*   ACTION MODE    */
+
+    private ActionMode actionMode = null;
+
+    private void removeSelectedItems() {
+        for (int i = adapter.getSelectedItemCount() - 1; i >= 0; i--) {
+            adapter.remove(adapter.getSelectedItems().get(i));
+        }
+        actionMode.finish();
+    }
+
+    private class ItemsAdapterListenerImpl implements ItemsAdapterListener {
+
+        @Override
+        public void onItemClick(Item item, int position) {
+            if (isInActionMode()) {
+                toggleSelection(position);
+            }
+        }
+
+        @Override
+        public void onItemLongClick(Item item, int position) {
+            if (isInActionMode()) {
+                return;
+            }
+            actionMode = ((AppCompatActivity) getActivity()).startSupportActionMode(actionModeCallback);
+            toggleSelection(position);
+        }
+
+        private void toggleSelection(int position) {
+            adapter.toggleSelection(position);
+        }
+
+        private boolean isInActionMode() {
+            return actionMode != null;
+        }
+    }
+
+    private ActionMode.Callback actionModeCallback = new ActionMode.Callback() {
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            MenuInflater inflater = new MenuInflater(getContext());
+            inflater.inflate(R.menu.items_menu, menu);
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.remove:
+                    showDialog();
+                    break;
+            }
+            return false;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            adapter.clearSelections();
+            actionMode = null;
+        }
+    };
+
+    /*  CONFIRMATION DIALOG  */
+
+    private void showDialog(){
+        ConfirmationDialog dialog = new ConfirmationDialog();
+        dialog.setListener(new ConfirmationDialogListener());
+        dialog.setActionMode(actionMode);
+        dialog.show(getFragmentManager(), "ConfirmationDialog");
+    }
+
+    private class ConfirmationDialogListener implements DialogInterface.OnClickListener{
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE:
+                    removeSelectedItems();
+                    break;
+                case DialogInterface.BUTTON_NEGATIVE:
+                    adapter.clearSelections();
+            }
+        }
+    }
+
 }
