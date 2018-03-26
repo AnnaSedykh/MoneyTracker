@@ -2,13 +2,16 @@ package com.loftschool.moneytracker;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+
 import android.view.View;
 
 public class MainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
@@ -16,6 +19,8 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     private ViewPager viewPager;
     private TabLayout tabLayout;
     private FloatingActionButton fab;
+
+    private ActionMode actionMode = null;
 
 
     @Override
@@ -82,6 +87,9 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
                 break;
             case ViewPager.SCROLL_STATE_DRAGGING:
             case ViewPager.SCROLL_STATE_SETTLING:
+                if(actionMode != null){
+                    actionMode.finish();
+                }
                 fab.setEnabled(false);
                 break;
         }
@@ -97,32 +105,16 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        Log.i("MainActivity", "onStart");
+    public void onSupportActionModeStarted(@NonNull android.support.v7.view.ActionMode mode) {
+        super.onSupportActionModeStarted(mode);
+        fab.hide();
+        actionMode = mode;
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        Log.i("MainActivity", "onResume");
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.i("MainActivity", "onPause");
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.i("MainActivity", "onStop");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.i("MainActivity", "onDestroy");
+    public void onSupportActionModeFinished(@NonNull android.support.v7.view.ActionMode mode) {
+        super.onSupportActionModeFinished(mode);
+        fab.show();
+        actionMode = null;
     }
 }
