@@ -77,7 +77,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHold
 
     Item remove(int position){
         final Item item = data.remove(position);
-        notifyItemChanged(position);
+        notifyItemRemoved(position);
         return item;
     }
 

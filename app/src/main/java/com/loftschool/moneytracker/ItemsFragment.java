@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -86,6 +87,11 @@ public class ItemsFragment extends Fragment {
                 loadData();
             }
         });
+
+        RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
+        itemAnimator.setAddDuration(1000);
+        itemAnimator.setRemoveDuration(1000);
+        recycler.setItemAnimator(itemAnimator);
 
         addItem(new Item("New item", "555", Item.TYPE_INCOMES));
         loadData();
@@ -165,6 +171,7 @@ public class ItemsFragment extends Fragment {
 
         private void toggleSelection(int position) {
             adapter.toggleSelection(position);
+            actionMode.setTitle(adapter.getSelectedItemCount() + " выбрано");
         }
 
         private boolean isInActionMode() {
@@ -192,7 +199,7 @@ public class ItemsFragment extends Fragment {
             switch (item.getItemId()) {
                 case R.id.remove:
                     showDialog();
-                    break;
+                    return true;
             }
             return false;
         }
