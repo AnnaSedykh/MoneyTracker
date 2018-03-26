@@ -177,6 +177,8 @@ public class ItemsFragment extends Fragment {
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             MenuInflater inflater = new MenuInflater(getContext());
             inflater.inflate(R.menu.items_menu, menu);
+
+            refresh.setEnabled(false);
             return true;
         }
 
@@ -199,6 +201,8 @@ public class ItemsFragment extends Fragment {
         public void onDestroyActionMode(ActionMode mode) {
             adapter.clearSelections();
             actionMode = null;
+
+            refresh.setEnabled(true);
         }
     };
 
@@ -219,7 +223,7 @@ public class ItemsFragment extends Fragment {
                     removeSelectedItems();
                     break;
                 case DialogInterface.BUTTON_NEGATIVE:
-                    adapter.clearSelections();
+                    actionMode.finish();
             }
         }
     }
