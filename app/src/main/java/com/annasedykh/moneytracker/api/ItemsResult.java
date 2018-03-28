@@ -1,6 +1,6 @@
 package com.annasedykh.moneytracker.api;
 
-public class AddItemsResult {
+public class ItemsResult {
     public String status;
     public int id;
 }

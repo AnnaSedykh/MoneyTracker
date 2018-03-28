@@ -21,7 +21,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.annasedykh.moneytracker.api.AddItemsResult;
+import com.annasedykh.moneytracker.api.BalanceResult;
+import com.annasedykh.moneytracker.api.ItemsResult;
 import com.annasedykh.moneytracker.api.Api;
 
 import java.util.List;
@@ -29,6 +30,8 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static android.content.ContentValues.TAG;
 
 public class ItemsFragment extends Fragment {
 
@@ -98,6 +101,25 @@ public class ItemsFragment extends Fragment {
         recycler.setItemAnimator(itemAnimator);
 
         loadData();
+        getBalance();
+    }
+
+    private void getBalance() {
+        Call<BalanceResult> call = api.getBalance();
+        call.enqueue(new Callback<BalanceResult>() {
+            @Override
+            public void onResponse(Call<BalanceResult> call, Response<BalanceResult> response) {
+                BalanceResult result = response.body();
+                if(result != null && getString(R.string.success_msg).equals(result.status)){
+                    Log.i(TAG, "onResponse: getBalance expenses = " + result.expenses + " , income = " + result.income);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BalanceResult> call, Throwable t) {
+
+            }
+        });
     }
 
     private void loadData() {
@@ -106,7 +128,6 @@ public class ItemsFragment extends Fragment {
         call.enqueue(new Callback<List<Item>>() {
             @Override
             public void onResponse(Call<List<Item>> call, Response<List<Item>> response) {
-                Log.i("ItemsFragment", "loadData onResponse: " + response.body());
                 adapter.setData(response.body());
                 refresh.setRefreshing(false);
             }
@@ -119,18 +140,19 @@ public class ItemsFragment extends Fragment {
     }
 
     private void addItem(final Item item) {
-        Call<AddItemsResult> call = api.addItem(item.price, item.name, item.type);
-        call.enqueue(new Callback<AddItemsResult>() {
+        Call<ItemsResult> call = api.addItem(item.price, item.name, item.type);
+        call.enqueue(new Callback<ItemsResult>() {
             @Override
-            public void onResponse(Call<AddItemsResult> call, Response<AddItemsResult> response) {
-                AddItemsResult result = response.body();
-                if (getString(R.string.success_msg).equals(result.status)) {
+            public void onResponse(Call<ItemsResult> call, Response<ItemsResult> response) {
+                ItemsResult result = response.body();
+                if (result != null && getString(R.string.success_msg).equals(result.status)) {
+                    item.id = result.id;
                     adapter.addItem(item);
                 }
             }
 
             @Override
-            public void onFailure(Call<AddItemsResult> call, Throwable t) {
+            public void onFailure(Call<ItemsResult> call, Throwable t) {
 
             }
         });
@@ -153,7 +175,23 @@ public class ItemsFragment extends Fragment {
 
     private void removeSelectedItems() {
         for (int i = adapter.getSelectedItemCount() - 1; i >= 0; i--) {
-            adapter.remove(adapter.getSelectedItems().get(i));
+           int position = adapter.getSelectedItems().get(i);
+            Call<ItemsResult> call = api.removeItem(adapter.getData().get(position).id);
+            call.enqueue(new Callback<ItemsResult>() {
+                @Override
+                public void onResponse(Call<ItemsResult> call, Response<ItemsResult> response) {
+                    ItemsResult result = response.body();
+                    if (result != null && getString(R.string.success_msg).equals(result.status)) {
+                        adapter.remove(result.id);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ItemsResult> call, Throwable t) {
+
+                }
+            });
+
         }
         actionMode.finish();
     }
