@@ -1,4 +1,4 @@
-package com.loftschool.moneytracker;
+package com.annasedykh.moneytracker;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -84,19 +84,19 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHold
 
 
     static class ItemViewHolder extends RecyclerView.ViewHolder {
-        private final TextView title;
+        private final TextView name;
         private final TextView price;
         private Context context;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
-            title = itemView.findViewById(R.id.title);
+            name = itemView.findViewById(R.id.name);
             price = itemView.findViewById(R.id.price);
             context = itemView.getContext();
         }
 
         public void bind(final Item item, final int position, final ItemsAdapterListener listener, boolean selected) {
-            title.setText(item.title);
+            name.setText(item.name);
             if (item.price.endsWith(context.getString(R.string.ruble))) {
                 price.setText(item.price);
             } else {

@@ -1,4 +1,4 @@
-package com.loftschool.moneytracker;
+package com.annasedykh.moneytracker;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-
 import android.view.View;
 
 public class MainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
@@ -21,6 +20,7 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     private FloatingActionButton fab;
 
     private ActionMode actionMode = null;
+    private App app;
 
 
     @Override
@@ -29,16 +29,15 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         setContentView(R.layout.activity_main);
         Log.i("MainActivity", "onCreate");
 
+        app = (App) getApplication();
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         viewPager = findViewById(R.id.view_pager);
         tabLayout = findViewById(R.id.tab_layout);
 
-        MainPagesAdapter adapter = new MainPagesAdapter(getSupportFragmentManager(), this);
-        viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(this);
-
         tabLayout.setupWithViewPager(viewPager);
 
         fab = findViewById(R.id.fab);
@@ -50,15 +49,32 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
 
                 if (currentPage == MainPagesAdapter.PAGE_INCOMES) {
                     type = Item.TYPE_INCOMES;
-                } else if(currentPage == MainPagesAdapter.PAGE_EXPENSES){
+                } else if (currentPage == MainPagesAdapter.PAGE_EXPENSES) {
                     type = Item.TYPE_EXPENSES;
                 }
 
                 Intent intent = new Intent(MainActivity.this, AddItemActivity.class);
                 intent.putExtra(ItemsFragment.TYPE_KEY, type);
-                startActivityForResult(intent,ItemsFragment.ADD_ITEM_REQUEST_CODE);
+                startActivityForResult(intent, ItemsFragment.ADD_ITEM_REQUEST_CODE);
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (app.isAuthorized()) {
+            initTabs();
+        } else {
+            Intent intent = new Intent(this, AuthActivity.class);
+            startActivity(intent);
+        }
+    }
+
+    private void initTabs() {
+        MainPagesAdapter adapter = new MainPagesAdapter(getSupportFragmentManager(), this);
+        viewPager.setAdapter(adapter);
     }
 
     @Override
@@ -87,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
                 break;
             case ViewPager.SCROLL_STATE_DRAGGING:
             case ViewPager.SCROLL_STATE_SETTLING:
-                if(actionMode != null){
+                if (actionMode != null) {
                     actionMode.finish();
                 }
                 fab.setEnabled(false);

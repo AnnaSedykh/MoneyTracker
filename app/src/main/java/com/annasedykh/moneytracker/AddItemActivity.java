@@ -1,4 +1,4 @@
-package com.loftschool.moneytracker;
+package com.annasedykh.moneytracker;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -71,7 +71,8 @@ public class AddItemActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String itemName = name.getText().toString();
-                String itemPrice = price.getText().toString();
+                String signedPrice = price.getText().toString();
+                String itemPrice = signedPrice.replace(getString(R.string.ruble), "");
 
                 Item item = new Item(itemName, itemPrice, type);
                 Intent intent = new Intent();

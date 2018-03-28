@@ -1,7 +1,6 @@
-package com.loftschool.moneytracker;
+package com.annasedykh.moneytracker;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -22,6 +21,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.annasedykh.moneytracker.api.AddItemsResult;
+import com.annasedykh.moneytracker.api.Api;
+
 import java.util.List;
 
 import retrofit2.Call;
@@ -40,6 +42,7 @@ public class ItemsFragment extends Fragment {
     private SwipeRefreshLayout refresh;
 
     private Api api;
+    private App app;
 
     public static ItemsFragment createItemsFragment(String type) {
         ItemsFragment fragment = new ItemsFragment();
@@ -62,7 +65,8 @@ public class ItemsFragment extends Fragment {
             throw new IllegalArgumentException("Unknown type");
         }
 
-        api = ((App) getActivity().getApplication()).getApi();
+        app = (App) getActivity().getApplication();
+        api = app.getApi();
     }
 
     @Nullable
@@ -93,7 +97,6 @@ public class ItemsFragment extends Fragment {
         itemAnimator.setRemoveDuration(1000);
         recycler.setItemAnimator(itemAnimator);
 
-        addItem(new Item("New item", "555", Item.TYPE_INCOMES));
         loadData();
     }
 
@@ -103,6 +106,7 @@ public class ItemsFragment extends Fragment {
         call.enqueue(new Callback<List<Item>>() {
             @Override
             public void onResponse(Call<List<Item>> call, Response<List<Item>> response) {
+                Log.i("ItemsFragment", "loadData onResponse: " + response.body());
                 adapter.setData(response.body());
                 refresh.setRefreshing(false);
             }
@@ -114,16 +118,19 @@ public class ItemsFragment extends Fragment {
         });
     }
 
-    private void addItem(Item item) {
-        Call<String> call = api.addItem(item);
-        call.enqueue(new Callback<String>() {
+    private void addItem(final Item item) {
+        Call<AddItemsResult> call = api.addItem(item.price, item.name, item.type);
+        call.enqueue(new Callback<AddItemsResult>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                Log.i("ItemsFragment", "addItem onResponse: " + response.body());
+            public void onResponse(Call<AddItemsResult> call, Response<AddItemsResult> response) {
+                AddItemsResult result = response.body();
+                if (getString(R.string.success_msg).equals(result.status)) {
+                    adapter.addItem(item);
+                }
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(Call<AddItemsResult> call, Throwable t) {
 
             }
         });
@@ -135,7 +142,7 @@ public class ItemsFragment extends Fragment {
         if (requestCode == ADD_ITEM_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             Item item = data.getParcelableExtra("item");
             if (item.type.equals(type)) {
-                adapter.addItem(item);
+                addItem(item);
             }
         }
     }
@@ -215,14 +222,14 @@ public class ItemsFragment extends Fragment {
 
     /*  CONFIRMATION DIALOG  */
 
-    private void showDialog(){
+    private void showDialog() {
         ConfirmationDialog dialog = new ConfirmationDialog();
         dialog.setListener(new ConfirmationDialogListener());
         dialog.setActionMode(actionMode);
         dialog.show(getFragmentManager(), "ConfirmationDialog");
     }
 
-    private class ConfirmationDialogListener implements DialogInterface.OnClickListener{
+    private class ConfirmationDialogListener implements DialogInterface.OnClickListener {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             switch (which) {

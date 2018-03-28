@@ -1,4 +1,4 @@
-package com.loftschool.moneytracker;
+package com.annasedykh.moneytracker;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -13,20 +13,19 @@ public class Item implements Parcelable{
     public static final String TYPE_UNKNOWN = "-1";
 
     public int id;
-    @SerializedName("name")
-    public String title;
+    public String name;
     public String price;
     public String type;
 
-    public Item(String title, String price, String type) {
-        this.title = title;
+    public Item(String name, String price, String type) {
+        this.name = name;
         this.price = price;
         this.type = type;
     }
 
     protected Item(Parcel in) {
         id = in.readInt();
-        title = in.readString();
+        name = in.readString();
         price = in.readString();
         type = in.readString();
     }
@@ -39,7 +38,7 @@ public class Item implements Parcelable{
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeInt(id);
-        parcel.writeString(title);
+        parcel.writeString(name);
         parcel.writeString(price);
         parcel.writeString(type);
     }
