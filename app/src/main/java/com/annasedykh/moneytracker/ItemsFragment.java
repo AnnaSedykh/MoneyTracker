@@ -1,7 +1,6 @@
-package com.loftschool.moneytracker;
+package com.annasedykh.moneytracker;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -22,11 +21,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.annasedykh.moneytracker.api.BalanceResult;
+import com.annasedykh.moneytracker.api.ItemsResult;
+import com.annasedykh.moneytracker.api.Api;
+
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static android.content.ContentValues.TAG;
 
 public class ItemsFragment extends Fragment {
 
@@ -40,6 +45,7 @@ public class ItemsFragment extends Fragment {
     private SwipeRefreshLayout refresh;
 
     private Api api;
+    private App app;
 
     public static ItemsFragment createItemsFragment(String type) {
         ItemsFragment fragment = new ItemsFragment();
@@ -62,7 +68,8 @@ public class ItemsFragment extends Fragment {
             throw new IllegalArgumentException("Unknown type");
         }
 
-        api = ((App) getActivity().getApplication()).getApi();
+        app = (App) getActivity().getApplication();
+        api = app.getApi();
     }
 
     @Nullable
@@ -93,8 +100,26 @@ public class ItemsFragment extends Fragment {
         itemAnimator.setRemoveDuration(1000);
         recycler.setItemAnimator(itemAnimator);
 
-        addItem(new Item("New item", "555", Item.TYPE_INCOMES));
         loadData();
+        getBalance();
+    }
+
+    private void getBalance() {
+        Call<BalanceResult> call = api.getBalance();
+        call.enqueue(new Callback<BalanceResult>() {
+            @Override
+            public void onResponse(Call<BalanceResult> call, Response<BalanceResult> response) {
+                BalanceResult result = response.body();
+                if(result != null && getString(R.string.success_msg).equals(result.status)){
+                    Log.i(TAG, "onResponse: getBalance expenses = " + result.expenses + " , income = " + result.income);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BalanceResult> call, Throwable t) {
+
+            }
+        });
     }
 
     private void loadData() {
@@ -114,16 +139,20 @@ public class ItemsFragment extends Fragment {
         });
     }
 
-    private void addItem(Item item) {
-        Call<String> call = api.addItem(item);
-        call.enqueue(new Callback<String>() {
+    private void addItem(final Item item) {
+        Call<ItemsResult> call = api.addItem(item.price, item.name, item.type);
+        call.enqueue(new Callback<ItemsResult>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                Log.i("ItemsFragment", "addItem onResponse: " + response.body());
+            public void onResponse(Call<ItemsResult> call, Response<ItemsResult> response) {
+                ItemsResult result = response.body();
+                if (result != null && getString(R.string.success_msg).equals(result.status)) {
+                    item.id = result.id;
+                    adapter.addItem(item);
+                }
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(Call<ItemsResult> call, Throwable t) {
 
             }
         });
@@ -135,7 +164,7 @@ public class ItemsFragment extends Fragment {
         if (requestCode == ADD_ITEM_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             Item item = data.getParcelableExtra("item");
             if (item.type.equals(type)) {
-                adapter.addItem(item);
+                addItem(item);
             }
         }
     }
@@ -146,7 +175,23 @@ public class ItemsFragment extends Fragment {
 
     private void removeSelectedItems() {
         for (int i = adapter.getSelectedItemCount() - 1; i >= 0; i--) {
-            adapter.remove(adapter.getSelectedItems().get(i));
+           int position = adapter.getSelectedItems().get(i);
+            Call<ItemsResult> call = api.removeItem(adapter.getData().get(position).id);
+            call.enqueue(new Callback<ItemsResult>() {
+                @Override
+                public void onResponse(Call<ItemsResult> call, Response<ItemsResult> response) {
+                    ItemsResult result = response.body();
+                    if (result != null && getString(R.string.success_msg).equals(result.status)) {
+                        adapter.remove(result.id);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ItemsResult> call, Throwable t) {
+
+                }
+            });
+
         }
         actionMode.finish();
     }
@@ -215,14 +260,14 @@ public class ItemsFragment extends Fragment {
 
     /*  CONFIRMATION DIALOG  */
 
-    private void showDialog(){
+    private void showDialog() {
         ConfirmationDialog dialog = new ConfirmationDialog();
         dialog.setListener(new ConfirmationDialogListener());
         dialog.setActionMode(actionMode);
         dialog.show(getFragmentManager(), "ConfirmationDialog");
     }
 
-    private class ConfirmationDialogListener implements DialogInterface.OnClickListener{
+    private class ConfirmationDialogListener implements DialogInterface.OnClickListener {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             switch (which) {

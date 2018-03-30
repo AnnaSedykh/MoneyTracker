@@ -1,7 +1,8 @@
-package com.loftschool.moneytracker;
+package com.annasedykh.moneytracker;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,12 +12,14 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.content.ContentValues.TAG;
+
 public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHolder> {
 
     private List<Item> data = new ArrayList<>();
     private ItemsAdapterListener listener = null;
 
-    public void setListener(ItemsAdapterListener listener){
+    public void setListener(ItemsAdapterListener listener) {
         this.listener = listener;
     }
 
@@ -43,8 +46,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHold
     }
 
     public void addItem(Item item) {
-        data.add(item);
-        notifyItemInserted(data.size());
+        data.add(0, item);
+        notifyItemInserted(0);
     }
 
     private SparseBooleanArray selections = new SparseBooleanArray();
@@ -58,16 +61,16 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHold
         notifyItemChanged(position);
     }
 
-    void clearSelections(){
+    void clearSelections() {
         selections.clear();
         notifyDataSetChanged();
     }
 
-    int getSelectedItemCount(){
+    int getSelectedItemCount() {
         return selections.size();
     }
 
-    List<Integer> getSelectedItems(){
+    List<Integer> getSelectedItems() {
         List<Integer> items = new ArrayList<>(selections.size());
         for (int i = 0; i < selections.size(); i++) {
             items.add(selections.keyAt(i));
@@ -75,28 +78,38 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHold
         return items;
     }
 
-    Item remove(int position){
-        final Item item = data.remove(position);
-        notifyItemRemoved(position);
-        return item;
+    Item remove(int id) {
+        for (int position = 0; position < data.size(); position++) {
+            if (id == data.get(position).id) {
+                Log.i(TAG, "remove: position = " + position + " data.size = " + data.size() + " id = " + id);
+                final Item item = data.remove(position);
+                notifyItemRemoved(position);
+                return item;
+            }
+        }
+        return null;
     }
 
 
+    public List<Item> getData() {
+        return data;
+    }
+
 
     static class ItemViewHolder extends RecyclerView.ViewHolder {
-        private final TextView title;
+        private final TextView name;
         private final TextView price;
         private Context context;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
-            title = itemView.findViewById(R.id.title);
+            name = itemView.findViewById(R.id.name);
             price = itemView.findViewById(R.id.price);
             context = itemView.getContext();
         }
 
         public void bind(final Item item, final int position, final ItemsAdapterListener listener, boolean selected) {
-            title.setText(item.title);
+            name.setText(item.name);
             if (item.price.endsWith(context.getString(R.string.ruble))) {
                 price.setText(item.price);
             } else {
@@ -105,7 +118,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHold
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(listener != null){
+                    if (listener != null) {
                         listener.onItemClick(item, position);
                     }
                 }
@@ -113,7 +126,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHold
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    if(listener != null){
+                    if (listener != null) {
                         listener.onItemLongClick(item, position);
                     }
                     return true;

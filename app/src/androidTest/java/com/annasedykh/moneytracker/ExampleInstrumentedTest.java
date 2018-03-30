@@ -1,4 +1,4 @@
-package com.loftschool.moneytracker;
+package com.annasedykh.moneytracker;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

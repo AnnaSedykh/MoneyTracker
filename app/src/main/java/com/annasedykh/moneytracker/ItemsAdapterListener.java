@@ -1,4 +1,4 @@
-package com.loftschool.moneytracker;
+package com.annasedykh.moneytracker;
 
 public interface ItemsAdapterListener {
     void onItemClick(Item item, int position);

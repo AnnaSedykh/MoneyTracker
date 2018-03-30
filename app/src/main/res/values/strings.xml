@@ -9,6 +9,10 @@
     <string name="cancel">Отмена</string>
     <string name="dialog_title">Удаление</string>
     <string name="dialog_msg">Вы уверены?</string>
+    <string name="sign_in_btn">Войти</string>
+    <string name="null_account_error_msg">Account is null!</string>
+    <string name="auth_failed_error_msg">Auth failed! </string>
+    <string name="success_msg">success</string>
 
     <string name="ruble">&#x20bd;</string>
     <string name="price">%s&#x20bd;</string>
@@ -16,6 +20,9 @@
     <string name="tab_incomes">Доходы</string>
     <string name="tab_expenses">Расходы</string>
     <string name="tab_balance">Баланс</string>
+
+    <string name="auth_screen_text">Ваш незаменимый помощник
+в управлении бюджетом</string>
 
     <string-array name="tab_titles">
         <item>@string/tab_incomes</item>
