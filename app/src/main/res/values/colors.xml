@@ -10,8 +10,6 @@
     <color name="colorItem">#fcc31e</color>
     <color name="colorItemDark">#daa10c</color>
     <color name="colorItemSelected">#985305</color>
-    <color name="colorExpense">#f76c41</color>
-    <color name="colorComment">#95989a</color>
 
     <color name="colorInactive">#ddede8</color>
     <color name="colorActive">@android:color/white</color>
@@ -20,4 +18,10 @@
 
     <color name="colorText">#ffffff</color>
     <color name="colorBackground">#84c0c5</color>
+
+    <color name="balance_total_color">#3ab7ae</color>
+    <color name="balance_expense_color">#f76c41</color>
+    <color name="balance_income_color">#fcc31e</color>
+    <color name="balance_secondary_text_color">#95989a</color>
+
 </resources>

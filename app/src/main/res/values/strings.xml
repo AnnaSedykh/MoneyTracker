@@ -16,10 +16,15 @@
 
     <string name="ruble">&#x20bd;</string>
     <string name="price">%s&#x20bd;</string>
+    <string name="price_int">%d &#x20bd;</string>
 
     <string name="tab_incomes">Доходы</string>
     <string name="tab_expenses">Расходы</string>
     <string name="tab_balance">Баланс</string>
+
+    <string name="balance_title">ваш баланс</string>
+    <string name="expense_title">расход</string>
+    <string name="income_title">доход</string>
 
     <string name="auth_screen_text">Ваш незаменимый помощник
 в управлении бюджетом</string>
