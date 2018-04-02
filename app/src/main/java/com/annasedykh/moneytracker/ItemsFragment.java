@@ -13,7 +13,6 @@ import android.support.v7.view.ActionMode;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,17 +20,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.annasedykh.moneytracker.api.BalanceResult;
-import com.annasedykh.moneytracker.api.ItemsResult;
 import com.annasedykh.moneytracker.api.Api;
+import com.annasedykh.moneytracker.api.ItemsResult;
 
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static android.content.ContentValues.TAG;
 
 public class ItemsFragment extends Fragment {
 
@@ -101,25 +97,6 @@ public class ItemsFragment extends Fragment {
         recycler.setItemAnimator(itemAnimator);
 
         loadData();
-        getBalance();
-    }
-
-    private void getBalance() {
-        Call<BalanceResult> call = api.getBalance();
-        call.enqueue(new Callback<BalanceResult>() {
-            @Override
-            public void onResponse(Call<BalanceResult> call, Response<BalanceResult> response) {
-                BalanceResult result = response.body();
-                if(result != null && getString(R.string.success_msg).equals(result.status)){
-                    Log.i(TAG, "onResponse: getBalance expenses = " + result.expenses + " , income = " + result.income);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<BalanceResult> call, Throwable t) {
-
-            }
-        });
     }
 
     private void loadData() {
@@ -175,7 +152,7 @@ public class ItemsFragment extends Fragment {
 
     private void removeSelectedItems() {
         for (int i = adapter.getSelectedItemCount() - 1; i >= 0; i--) {
-           int position = adapter.getSelectedItems().get(i);
+            int position = adapter.getSelectedItems().get(i);
             Call<ItemsResult> call = api.removeItem(adapter.getData().get(position).id);
             call.enqueue(new Callback<ItemsResult>() {
                 @Override
