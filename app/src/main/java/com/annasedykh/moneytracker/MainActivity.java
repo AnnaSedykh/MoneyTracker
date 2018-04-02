@@ -1,5 +1,6 @@
 package com.annasedykh.moneytracker;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,7 +12,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+
+import com.annasedykh.moneytracker.api.Result;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.tasks.OnSuccessListener;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
 
@@ -71,6 +82,20 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
             Intent intent = new Intent(this, AuthActivity.class);
             startActivity(intent);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        MenuItem item = menu.findItem(R.id.logout);
+        item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                showDialog();
+                return true;
+            }
+        });
+        return true;
     }
 
     private void initTabs() {
@@ -136,4 +161,53 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         fab.show();
         actionMode = null;
     }
+
+    /*  CONFIRMATION DIALOG  */
+
+    private void showDialog() {
+        LogoutDialog dialog = new LogoutDialog();
+        dialog.setListener(new MainActivity.LogoutDialogListener());
+        dialog.show(getSupportFragmentManager(), "LogoutDialog");
+    }
+
+    private class LogoutDialogListener implements DialogInterface.OnClickListener {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE:
+                    logout();
+                    break;
+                case DialogInterface.BUTTON_NEGATIVE:
+                    dialog.cancel();
+            }
+        }
+    }
+
+    private void logout() {
+
+        GoogleSignInClient googleSignInClient = app.getGoogleSignInClient();
+        googleSignInClient.signOut().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Call<Result> call = app.getApi().logout();
+                call.enqueue(new Callback<Result>() {
+                    @Override
+                    public void onResponse(Call<Result> call, Response<Result> response) {
+                        Result result = response.body();
+                        if (result != null && result.status.equals(getString(R.string.success_msg))) {
+                            app.clearAuthToken();
+                            finish();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Result> call, Throwable t) {
+
+                    }
+                });
+            }
+        });
+
+    }
+
 }

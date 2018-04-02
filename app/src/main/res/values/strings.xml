@@ -13,6 +13,7 @@
     <string name="null_account_error_msg">Account is null!</string>
     <string name="auth_failed_error_msg">Auth failed! </string>
     <string name="success_msg">success</string>
+    <string name="logout">Выйти</string>
 
     <string name="ruble">&#x20bd;</string>
     <string name="price">%s&#x20bd;</string>

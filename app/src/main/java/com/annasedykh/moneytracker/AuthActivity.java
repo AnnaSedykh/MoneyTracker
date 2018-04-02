@@ -47,6 +47,7 @@ public class AuthActivity extends AppCompatActivity {
 
         app = (App) getApplication();
         api = app.getApi();
+        app.setGoogleSignInClient(googleSignInClient);
 
         Button button = findViewById(R.id.sign_in_button);
         button.setOnClickListener(new View.OnClickListener() {
