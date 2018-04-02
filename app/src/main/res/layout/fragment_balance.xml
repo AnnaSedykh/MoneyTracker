@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_pattern">
+    android:background="@drawable/bg_pattern"
+    android:padding="24dp">
 
 
     <TextView
@@ -13,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="16dp"
         android:textColor="@color/balance_total_color"
         android:textSize="50sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -92,8 +93,8 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="?android:attr/actionBarSize"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
