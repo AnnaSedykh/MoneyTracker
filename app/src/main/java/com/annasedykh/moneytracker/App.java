@@ -25,8 +25,6 @@ public class App extends Application {
     private static final String KEY_TOKEN = "auth_token";
     private Api api;
 
-    private GoogleSignInClient googleSignInClient;
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -71,14 +69,6 @@ public class App extends Application {
 
     public boolean isAuthorized() {
         return !TextUtils.isEmpty(getAuthToken());
-    }
-
-    public GoogleSignInClient getGoogleSignInClient() {
-        return googleSignInClient;
-    }
-
-    public void setGoogleSignInClient(GoogleSignInClient googleSignInClient) {
-        this.googleSignInClient = googleSignInClient;
     }
 
     private class AuthIntercepror implements Interceptor {

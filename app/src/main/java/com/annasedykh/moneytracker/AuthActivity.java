@@ -12,11 +12,13 @@ import android.widget.Toast;
 
 import com.annasedykh.moneytracker.api.Api;
 import com.annasedykh.moneytracker.api.AuthResult;
+import com.annasedykh.moneytracker.api.Result;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 import retrofit2.Call;
@@ -38,16 +40,22 @@ public class AuthActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth);
+        if (googleSignInClient == null) {
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestEmail()
+                    .build();
 
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
-
-        googleSignInClient = GoogleSignIn.getClient(this, gso);
+            googleSignInClient = GoogleSignIn.getClient(this, gso);
+        }
 
         app = (App) getApplication();
         api = app.getApi();
-        app.setGoogleSignInClient(googleSignInClient);
+
+        boolean isLogoutIntent = getIntent().getBooleanExtra(MainActivity.LOGOUT, false);
+
+        if(app.isAuthorized() && isLogoutIntent){
+            logout();
+        }
 
         Button button = findViewById(R.id.sign_in_button);
         button.setOnClickListener(new View.OnClickListener() {
@@ -61,6 +69,31 @@ public class AuthActivity extends AppCompatActivity {
     private void signIn() {
         Intent signInIntent = googleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    private void logout() {
+
+        googleSignInClient.signOut().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Call<Result> call = app.getApi().logout();
+                call.enqueue(new Callback<Result>() {
+                    @Override
+                    public void onResponse(Call<Result> call, Response<Result> response) {
+                        Result result = response.body();
+                        if (result != null && result.status.equals(getString(R.string.success_msg))) {
+                            app.clearAuthToken();
+                            finish();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Result> call, Throwable t) {
+
+                    }
+                });
+            }
+        });
     }
 
     @Override

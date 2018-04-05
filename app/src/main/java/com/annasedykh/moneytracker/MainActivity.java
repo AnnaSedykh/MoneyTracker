@@ -16,16 +16,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.annasedykh.moneytracker.api.Result;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.tasks.OnSuccessListener;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 public class MainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
 
+    public static final String LOGOUT = "logout";
+    private static final int LOGOUT_CODE = 777;
     private ViewPager viewPager;
     private TabLayout tabLayout;
     private FloatingActionButton fab;
@@ -143,6 +137,10 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        if(requestCode == LOGOUT_CODE){
+            finish();
+        }
+
         for (Fragment fragment : getSupportFragmentManager().getFragments()) {
             fragment.onActivityResult(requestCode, resultCode, data);
         }
@@ -162,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         actionMode = null;
     }
 
-    /*  CONFIRMATION DIALOG  */
+    /*  LOGOUT DIALOG  */
 
     private void showDialog() {
         LogoutDialog dialog = new LogoutDialog();
@@ -175,38 +173,14 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         public void onClick(DialogInterface dialog, int which) {
             switch (which) {
                 case DialogInterface.BUTTON_POSITIVE:
-                    logout();
+                    Intent intent = new Intent(MainActivity.this, AuthActivity.class);
+                    intent.putExtra(LOGOUT, true);
+                    startActivityForResult(intent, LOGOUT_CODE);
                     break;
                 case DialogInterface.BUTTON_NEGATIVE:
                     dialog.cancel();
             }
         }
-    }
-
-    private void logout() {
-
-        GoogleSignInClient googleSignInClient = app.getGoogleSignInClient();
-        googleSignInClient.signOut().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Call<Result> call = app.getApi().logout();
-                call.enqueue(new Callback<Result>() {
-                    @Override
-                    public void onResponse(Call<Result> call, Response<Result> response) {
-                        Result result = response.body();
-                        if (result != null && result.status.equals(getString(R.string.success_msg))) {
-                            app.clearAuthToken();
-                            finish();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<Result> call, Throwable t) {
-
-                    }
-                });
-            }
-        });
 
     }
 
