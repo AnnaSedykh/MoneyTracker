@@ -1,5 +1,6 @@
 package com.annasedykh.moneytracker;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,10 +12,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 public class MainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
 
+    public static final String LOGOUT = "logout";
+    private static final int LOGOUT_CODE = 777;
     private ViewPager viewPager;
     private TabLayout tabLayout;
     private FloatingActionButton fab;
@@ -73,6 +78,20 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        MenuItem item = menu.findItem(R.id.logout);
+        item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                showDialog();
+                return true;
+            }
+        });
+        return true;
+    }
+
     private void initTabs() {
         if (pagesAdapter == null) {
             pagesAdapter = new MainPagesAdapter(getSupportFragmentManager(), this);
@@ -118,6 +137,10 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        if(requestCode == LOGOUT_CODE){
+            finish();
+        }
+
         for (Fragment fragment : getSupportFragmentManager().getFragments()) {
             fragment.onActivityResult(requestCode, resultCode, data);
         }
@@ -136,4 +159,29 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         fab.show();
         actionMode = null;
     }
+
+    /*  LOGOUT DIALOG  */
+
+    private void showDialog() {
+        LogoutDialog dialog = new LogoutDialog();
+        dialog.setListener(new MainActivity.LogoutDialogListener());
+        dialog.show(getSupportFragmentManager(), "LogoutDialog");
+    }
+
+    private class LogoutDialogListener implements DialogInterface.OnClickListener {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE:
+                    Intent intent = new Intent(MainActivity.this, AuthActivity.class);
+                    intent.putExtra(LOGOUT, true);
+                    startActivityForResult(intent, LOGOUT_CODE);
+                    break;
+                case DialogInterface.BUTTON_NEGATIVE:
+                    dialog.cancel();
+            }
+        }
+
+    }
+
 }

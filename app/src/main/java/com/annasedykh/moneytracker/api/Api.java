@@ -14,7 +14,7 @@ public interface Api {
     @GET("auth")
     Call<AuthResult> auth(@Query("social_user_id") String userId);
 
-    @GET
+    @GET("logout")
     Call<Result> logout();
 
     @GET("balance")

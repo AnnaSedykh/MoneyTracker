@@ -4,6 +4,7 @@ import android.app.Application;
 import android.text.TextUtils;
 
 import com.annasedykh.moneytracker.api.Api;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -60,6 +61,10 @@ public class App extends Application {
 
     public String getAuthToken() {
         return getSharedPreferences(PREFS_NAME, MODE_PRIVATE).getString(KEY_TOKEN, null);
+    }
+
+    public void clearAuthToken() {
+        getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit().clear().apply();
     }
 
     public boolean isAuthorized() {
