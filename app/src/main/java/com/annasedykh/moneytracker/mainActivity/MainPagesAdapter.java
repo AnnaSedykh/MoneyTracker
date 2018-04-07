@@ -1,4 +1,4 @@
-package com.annasedykh.moneytracker.main;
+package com.annasedykh.moneytracker.mainActivity;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;

@@ -11,7 +11,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.annasedykh.moneytracker.app.App;
-import com.annasedykh.moneytracker.main.MainActivity;
+import com.annasedykh.moneytracker.mainActivity.MainActivity;
 import com.annasedykh.moneytracker.R;
 import com.annasedykh.moneytracker.api.Api;
 import com.annasedykh.moneytracker.api.AuthResult;
