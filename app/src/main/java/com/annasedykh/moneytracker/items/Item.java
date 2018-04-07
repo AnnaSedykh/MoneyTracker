@@ -1,9 +1,7 @@
-package com.annasedykh.moneytracker;
+package com.annasedykh.moneytracker.items;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.google.gson.annotations.SerializedName;
 
 public class Item implements Parcelable{
 

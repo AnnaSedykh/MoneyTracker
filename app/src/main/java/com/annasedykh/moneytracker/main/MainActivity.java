@@ -1,4 +1,4 @@
-package com.annasedykh.moneytracker;
+package com.annasedykh.moneytracker.main;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,6 +15,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
+import com.annasedykh.moneytracker.app.App;
+import com.annasedykh.moneytracker.R;
+import com.annasedykh.moneytracker.auth.AuthActivity;
+import com.annasedykh.moneytracker.auth.LogoutDialog;
+import com.annasedykh.moneytracker.items.AddItemActivity;
+import com.annasedykh.moneytracker.items.Item;
+import com.annasedykh.moneytracker.items.ItemsFragment;
 
 public class MainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
 
@@ -33,11 +41,11 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.i("MainActivity", "onCreate");
 
         app = (App) getApplication();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.main_screen_title);
         setSupportActionBar(toolbar);
 
         viewPager = findViewById(R.id.view_pager);

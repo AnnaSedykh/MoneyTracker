@@ -1,4 +1,4 @@
-package com.annasedykh.moneytracker;
+package com.annasedykh.moneytracker.balance;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -10,6 +10,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
+
+import com.annasedykh.moneytracker.R;
 
 public class DiagramView extends View {
 

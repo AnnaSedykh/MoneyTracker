@@ -1,4 +1,4 @@
-package com.annasedykh.moneytracker;
+package com.annasedykh.moneytracker.items;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -20,6 +20,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.annasedykh.moneytracker.app.App;
+import com.annasedykh.moneytracker.R;
 import com.annasedykh.moneytracker.api.Api;
 import com.annasedykh.moneytracker.api.ItemsResult;
 

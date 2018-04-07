@@ -1,4 +1,4 @@
-package com.annasedykh.moneytracker;
+package com.annasedykh.moneytracker.auth;
 
 
 import android.content.Intent;
@@ -10,6 +10,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.annasedykh.moneytracker.app.App;
+import com.annasedykh.moneytracker.main.MainActivity;
+import com.annasedykh.moneytracker.R;
 import com.annasedykh.moneytracker.api.Api;
 import com.annasedykh.moneytracker.api.AuthResult;
 import com.annasedykh.moneytracker.api.Result;

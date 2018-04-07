@@ -1,4 +1,4 @@
-package com.annasedykh.moneytracker;
+package com.annasedykh.moneytracker.items;
 
 public interface ItemsAdapterListener {
     void onItemClick(Item item, int position);

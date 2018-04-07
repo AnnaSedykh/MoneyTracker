@@ -1,4 +1,4 @@
-package com.annasedykh.moneytracker;
+package com.annasedykh.moneytracker.balance;
 
 
 import android.os.Bundle;
@@ -9,7 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.annasedykh.moneytracker.app.App;
+import com.annasedykh.moneytracker.R;
 import com.annasedykh.moneytracker.api.Api;
+import com.annasedykh.moneytracker.items.ItemsFragment;
 
 public class BalanceFragment extends Fragment {
 

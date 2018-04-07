@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/bg_pattern"
     android:orientation="vertical"
-    tools:context=".AddItemActivity">
+    tools:context=".items.AddItemActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"

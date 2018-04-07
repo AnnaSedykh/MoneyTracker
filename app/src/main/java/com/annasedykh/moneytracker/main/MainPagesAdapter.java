@@ -1,9 +1,14 @@
-package com.annasedykh.moneytracker;
+package com.annasedykh.moneytracker.main;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+
+import com.annasedykh.moneytracker.R;
+import com.annasedykh.moneytracker.balance.BalanceFragment;
+import com.annasedykh.moneytracker.items.Item;
+import com.annasedykh.moneytracker.items.ItemsFragment;
 
 
 public class MainPagesAdapter extends FragmentPagerAdapter {

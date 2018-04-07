@@ -88,7 +88,7 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5" />
 
-    <com.annasedykh.moneytracker.DiagramView
+    <com.annasedykh.moneytracker.balance.DiagramView
         android:id="@+id/diagram"
         android:layout_width="0dp"
         android:layout_height="0dp"

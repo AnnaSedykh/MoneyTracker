@@ -1,9 +1,8 @@
-package com.annasedykh.moneytracker;
+package com.annasedykh.moneytracker.items;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -12,6 +11,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import com.annasedykh.moneytracker.R;
 
 public class AddItemActivity extends AppCompatActivity {
 

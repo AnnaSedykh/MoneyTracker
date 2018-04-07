@@ -1,10 +1,10 @@
-package com.annasedykh.moneytracker;
+package com.annasedykh.moneytracker.app;
 
 import android.app.Application;
 import android.text.TextUtils;
 
+import com.annasedykh.moneytracker.BuildConfig;
 import com.annasedykh.moneytracker.api.Api;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 

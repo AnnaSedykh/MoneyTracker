@@ -1,4 +1,4 @@
-package com.annasedykh.moneytracker;
+package com.annasedykh.moneytracker.items;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.annasedykh.moneytracker.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,7 +83,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHold
     Item remove(int id) {
         for (int position = 0; position < data.size(); position++) {
             if (id == data.get(position).id) {
-                Log.i(TAG, "remove: position = " + position + " data.size = " + data.size() + " id = " + id);
                 final Item item = data.remove(position);
                 notifyItemRemoved(position);
                 return item;

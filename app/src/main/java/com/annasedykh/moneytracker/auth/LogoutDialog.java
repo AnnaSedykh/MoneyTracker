@@ -1,4 +1,4 @@
-package com.annasedykh.moneytracker;
+package com.annasedykh.moneytracker.auth;
 
 
 import android.app.Dialog;
@@ -7,7 +7,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.view.ActionMode;
+
+import com.annasedykh.moneytracker.R;
 
 
 public class LogoutDialog extends DialogFragment {

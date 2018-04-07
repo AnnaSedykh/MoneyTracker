@@ -1,6 +1,6 @@
 package com.annasedykh.moneytracker.api;
 
-import com.annasedykh.moneytracker.Item;
+import com.annasedykh.moneytracker.items.Item;
 
 import java.util.List;
 
