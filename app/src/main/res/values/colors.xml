@@ -9,7 +9,7 @@
     <color name="colorShadow">#30303030</color>
     <color name="colorItem">#fcc31e</color>
     <color name="colorItemDark">#daa10c</color>
-    <color name="colorItemSelected">#985305</color>
+    <color name="colorItemSelected">#e17f11</color>
 
     <color name="colorInactive">#ddede8</color>
     <color name="colorActive">@android:color/white</color>

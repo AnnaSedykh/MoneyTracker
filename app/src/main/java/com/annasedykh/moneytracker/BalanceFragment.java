@@ -4,24 +4,14 @@ package com.annasedykh.moneytracker;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.annasedykh.moneytracker.api.Api;
-import com.annasedykh.moneytracker.api.BalanceResult;
 
-import java.util.Random;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-import static android.content.ContentValues.TAG;
-
-public class BalanceFragment extends Fragment{
+public class BalanceFragment extends Fragment {
 
     private TextView total;
     private TextView income;
@@ -31,7 +21,7 @@ public class BalanceFragment extends Fragment{
     private Api api;
     private App app;
 
-    public static BalanceFragment createBalanceFragment(){
+    public static BalanceFragment createBalanceFragment() {
         return new BalanceFragment();
     }
 
@@ -60,32 +50,22 @@ public class BalanceFragment extends Fragment{
         getBalance();
     }
 
-//    @Override
-//    public void setUserVisibleHint(boolean isVisibleToUser) {
-//        super.setUserVisibleHint(isVisibleToUser);
-//        if (isVisibleToUser && isResumed()) {
-//            updateData();
-//        }
-//    }
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && isResumed()) {
+            getBalance();
+        }
+    }
 
     private void getBalance() {
-        Call<BalanceResult> call = api.getBalance();
-        call.enqueue(new Callback<BalanceResult>() {
-            @Override
-            public void onResponse(Call<BalanceResult> call, Response<BalanceResult> response) {
-                BalanceResult result = response.body();
-                if(result != null && getString(R.string.success_msg).equals(result.status)){
-                    total.setText(getString(R.string.price_int, result.income - result.expenses));
-                    income.setText(getString(R.string.price_int, result.income));
-                    expense.setText(getString(R.string.price_int, result.expenses));
-                    diagram.update(result.income, result.expenses);
-                }
-            }
+        int resultIncome = ItemsFragment.getResultIncome();
+        int resultExpenses = ItemsFragment.getResultExpenses();
 
-            @Override
-            public void onFailure(Call<BalanceResult> call, Throwable t) {
+        total.setText(getString(R.string.price_int, resultIncome - resultExpenses));
+        income.setText(getString(R.string.price_int, resultIncome));
+        expense.setText(getString(R.string.price_int, resultExpenses));
+        diagram.update(resultIncome, resultExpenses);
 
-            }
-        });
     }
 }

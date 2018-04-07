@@ -33,6 +33,8 @@ public class ItemsFragment extends Fragment {
 
     public static final String TYPE_KEY = "type";
     public static final int ADD_ITEM_REQUEST_CODE = 123;
+    private static int resultIncome;
+    private static int resultExpenses;
 
     private String type;
 
@@ -105,8 +107,10 @@ public class ItemsFragment extends Fragment {
         call.enqueue(new Callback<List<Item>>() {
             @Override
             public void onResponse(Call<List<Item>> call, Response<List<Item>> response) {
-                adapter.setData(response.body());
+                List<Item> items = response.body();
+                adapter.setData(items);
                 refresh.setRefreshing(false);
+                countSum(items, type);
             }
 
             @Override
@@ -125,6 +129,7 @@ public class ItemsFragment extends Fragment {
                 if (result != null && getString(R.string.success_msg).equals(result.status)) {
                     item.id = result.id;
                     adapter.addItem(item);
+                    loadData();
                 }
             }
 
@@ -146,6 +151,31 @@ public class ItemsFragment extends Fragment {
         }
     }
 
+    public static int getResultIncome() {
+        return resultIncome;
+    }
+
+    public static int getResultExpenses() {
+        return resultExpenses;
+    }
+
+    private void countSum(List<Item> items, String type) {
+        int total = 0;
+        if (items != null) {
+            for (Item item : items) {
+                total += Integer.parseInt(item.price);
+            }
+        }
+        switch (type) {
+            case Item.TYPE_INCOMES:
+                resultIncome = total;
+                break;
+            case Item.TYPE_EXPENSES:
+                resultExpenses = total;
+                break;
+        }
+    }
+
     /*   ACTION MODE    */
 
     private ActionMode actionMode = null;
@@ -160,6 +190,7 @@ public class ItemsFragment extends Fragment {
                     ItemsResult result = response.body();
                     if (result != null && getString(R.string.success_msg).equals(result.status)) {
                         adapter.remove(result.id);
+                        loadData();
                     }
                 }
 
