@@ -26,6 +26,7 @@ import com.annasedykh.moneytracker.items.ItemsFragment;
 public class MainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
 
     public static final String LOGOUT = "logout";
+    public static final int AUTH_CODE = 111;
     private static final int LOGOUT_CODE = 777;
     private ViewPager viewPager;
     private TabLayout tabLayout;
@@ -81,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
             initTabs();
         } else {
             Intent intent = new Intent(this, AuthActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, AUTH_CODE);
         }
     }
 
@@ -145,6 +146,9 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == LOGOUT_CODE){
+            finish();
+        }
+        else if(requestCode == AUTH_CODE && resultCode == RESULT_CANCELED){
             finish();
         }
 

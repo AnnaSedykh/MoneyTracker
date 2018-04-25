@@ -142,6 +142,7 @@ public class AuthActivity extends AppCompatActivity {
                 AuthResult result = response.body();
                 if (result != null) {
                     app.saveAuthToken(result.token);
+                    setResult(RESULT_OK, getIntent());
                     finish();
                 }
             }
