@@ -16,11 +16,11 @@ android {
             shrinkResources true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField("String", "BASE_URL", "\"http://android.loftschool.com/basic/v1/\"")
+            buildConfigField("String", "BASE_URL", "\"https://loftschool.com/android-api/basic/v1/\"")
         }
         debug{
             applicationIdSuffix ".debug"
-            buildConfigField("String", "BASE_URL", "\"http://android.loftschool.com/basic/v1/\"")
+            buildConfigField("String", "BASE_URL", "\"https://loftschool.com/android-api/basic/v1/\"")
         }
     }
 }
